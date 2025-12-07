@@ -41,7 +41,7 @@ export class LoginComponent {
   // apiService = inject(ApiService);
   //
   history = window.history
-  helpLink = ""
+  helpLink = "https://t.me/Fanhhh10"
 
   loginForm = new FormGroup({
     username: new FormControl(''),
