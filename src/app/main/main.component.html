@@ -1,0 +1,210 @@
+<app-spinner></app-spinner>
+<app-menu-bottom></app-menu-bottom>
+
+<div class="body-overlay"></div>
+
+<div class="page page--medical" data-page="intro-metro">
+
+
+	<header class="mobile-header">
+
+  <div  class="logo"><img style='width:40%' src="assets/favicon.png" alt=""></div>
+
+	<button (click)="quickNav.go('/notification')" mat-icon-button aria-label="Notifications" class="icon-btn" translate='no'>
+		<mat-icon class="{{quickNav.storeData.store['totalNotUnread']?'ringing':''}}">notifications</mat-icon>
+		<span class="badge">{{ quickNav.storeData.store['unreadNotification'] }}</span>
+	</button>
+
+	<!-- <button mat-icon-button aria-label="Logout" class="icon-btn" (click)="quickNav.authService.logout(false)">
+    <mat-icon>logout</mat-icon>
+  </button> -->
+
+</header>
+
+	<!-- PAGE CONTENT -->
+	<div *ngIf="quickNav.storeData.store as data" class="page__content page__content--with-header">
+
+			<div  class="user-welcome mb-10">
+				<div class="x-flex">
+					<span>
+						Hello, <strong> {{data['username']}}</strong>
+					</span>
+
+					<span translate='no' *ngIf="data['wallet']">
+						{{data['wallet']['init_currency'].symbol}}
+						<span style="font-weight:500">{{data['wallet'].balance.new|number}}</span>
+					</span>
+
+				</div>
+
+	    </div>
+				<div class="slider-container mb-20">
+					  <div class="slider">
+					    <img [src]="images[currentIndex]" alt="Slide image" />
+					  </div>
+					</div>
+
+					<div class="icon-grid">
+			      <div class="icon-item" (click)="router.navigate(['wallet', 'deposit'])">
+			        <div class="icon-circle deposit"><i class="fas fa-wallet"></i></div>
+			        <div class="label">Deposit</div>
+			      </div>
+			      <div class="icon-item" (click)="router.navigate(['wallet', 'withdraw'])">
+			        <div class="icon-circle withdraw"><i class="fas fa-hand-holding-usd"></i></div>
+			        <div class="label">Withdraw</div>
+			      </div>
+			      <!-- <div class="icon-item" (click)="router.navigate(['vip'])">
+			        <div class="icon-circle vip"><i class="fas fa-exchange-alt"></i></div>
+			        <div class="label">VIP</div>
+			      </div> -->
+			      <div class="icon-item" (click)="router.navigate(['wallet', 'transaction'])">
+			        <div class="icon-circle transactions"><i class="fas fa-exchange-alt"></i></div>
+			        <div class="label">Transactions</div>
+			      </div>
+			      <div class="icon-item" (click)="router.navigate(['/invite-rewards'])">
+			        <div class="icon-circle gift"><i class="fas fa-gift"></i></div>
+			        <div class="label">Rewards</div>
+			      </div>
+			      <div (click)="openBlank('https://t.me/GOTV123')" class="icon-item" target="_blank" rel="noopener noreferrer">
+			        <div class="icon-circle help"><i class="fas fa-question-circle"></i></div>
+			        <div class="label">Help</div>
+			      </div>
+			      <div (click)="openBlank('https://t.me/paygotv')" class="icon-item"  target="_blank" rel="noopener noreferrer">
+			        <div class="icon-circle telegram"><i class="fab fa-telegram-plane"></i></div>
+			        <div class="label">Channel</div>
+			      </div>
+			      <!-- <div class="icon-item"  target="_blank" rel="noopener noreferrer">
+			        <div class="icon-circle discussion"><i class="fas fa-users"></i></div>
+			        <div class="label">Discussion</div>
+			      </div> -->
+			      <!-- <div
+			        class="icon-item"
+
+			      >
+			        <div class="icon-circle app"><i class="fas fa-mobile-alt"></i></div>
+			        <div class="label">App</div>
+			      </div> -->
+			      <div class="icon-item" (click)="quickNav.authService.logout(false)">
+			        <div class="icon-circle logout"><i class="fas fa-power-off"></i></div>
+			        <div class="label">Logout</div>
+			      </div>
+			    </div>
+
+					<section class="mr-section">
+						<div class="mr-header">
+							<div class="mr-title">
+							<h1>Mining Robot — Plans</h1>
+							<p class="subtitle">Choose a plan that fits your appetite. Daily returns, fixed lifecycle — transparent & automated.</p>
+							</div>
+							<button class="cta">Get Started</button>
+						</div>
+
+
+						<div class="mr-grid">
+							<article class="mr-card" *ngFor="let tier of tiers" [class.popular]="tier.popular">
+							<div class="badge" *ngIf="tier.popular">Popular</div>
+							<div class="card-top">
+							<div>
+							<h2 class="income">{{ tier.daily }}<span class="small">/day</span></h2>
+							<div class="lifecycle">Lifetime: <strong>{{ tier.lifecycle }} days</strong></div>
+							</div>
+							<div class="price-range">${{ tier.min }} - ${{ tier.max }}<span class="usdt"> USDT</span></div>
+							</div>
+
+
+							<ul class="features">
+							<li><strong>Daily ROI:</strong> {{ tier.daily }}</li>
+							<li><strong>Period:</strong> {{ tier.lifecycle }} days</li>
+							<li><strong>Purchase:</strong> {{ tier.min }} - {{ tier.max }} USDT</li>
+							</ul>
+
+
+							<div class="card-bottom">
+								<button class="buy" (click)="openModal(tier)">Buy Now</button>
+							</div>
+							</article>
+						</div>
+
+
+						<p class="footnote">*Estimated return updates live based on your entered amount.</p>
+						</section>
+
+
+						<!-- MODAL OVERLAY -->
+						<div class="modal-overlay" *ngIf="modalVisible" (click)="closeModal()"></div>
+
+
+						<!-- MODAL BOX -->
+						<div class="modal" *ngIf="modalVisible">
+						<div class="modal-header">
+						<h2>Purchase Plan</h2>
+						<button class="close" (click)="closeModal()">×</button>
+						</div>
+
+
+						<div class="modal-body">
+						<div class="modal-section">
+						<label>Daily Income</label>
+						<div class="value">{{ selectedTier?.daily }}</div>
+						</div>
+						<div class="modal-section">
+						<label>Life Cycle</label>
+						<div class="value">{{ selectedTier?.lifecycle }} days</div>
+						</div>
+						<div class="modal-section">
+							<label>Purchase Range</label>
+							<div class="value">{{ selectedTier?.min }} - {{ selectedTier?.max }} USDT</div>
+						</div>
+						<div class="modal-section">
+							<label>Estimated Return</label>
+							<div class="value total text-main">{{ estimatedProfit }} USDT</div>
+						</div>
+
+
+						<div class="modal-input">
+							<label>Enter Amount (USDT)</label>
+							<input type="number" [(ngModel)]="amount" (keyup)="updateEstimate()" min="1" placeholder="Enter amount">
+						</div>
+
+						<div class="modal-actions">
+				      <button (click)="investNow()"  class="primary-btn">Buy now</button>
+				      <button class="ghost-btn" (click)="closeModal()">Cancel</button>
+				    </div>
+
+
+				<!-- <div (click)="GiftBoxOpen=true" class="gift-sidebar">
+				  <i class="fa fa-gift"></i>
+				  <span>Gift Code</span>
+				</div> -->
+
+
+
+
+		<!-- load gift code modal -->
+		<div
+		  class="modal-sheet"
+		  [class.show]="GiftBoxOpen"
+		  *ngIf="GiftBoxOpen"
+		>
+
+			<h2>Load Gift Code</h2>
+
+			<form >
+				<div class="form">
+						<div class="form__row">
+							<input [(ngModel)]='giftCode' type="number" name="amount" value="" class="form__input required" placeholder="Code" required>
+						</div>
+				</div>
+			</form>
+
+			<div class="modal-actions">
+	      <button (click)="loadGiftCode()"  class="primary-btn">Load</button>
+	      <button class="ghost-btn" (click)="closeModal()">Cancel</button>
+	    </div>
+		</div>
+
+	</div>
+
+
+
+</div>
