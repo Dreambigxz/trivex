@@ -4,10 +4,9 @@ import { finalize, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class RequestDataService {
-  private baseUrl = 'http://127.0.0.1:8000/api'; // Replace with your API endpoint
-  // private baseUrl = "https://paygotv-33bf80a391fc.herokuapp.com/api"
-  // private baseUrl = 'https://phoenixfb-4dbc020dd64a.herokuapp.com/api'; // Replace with your API endpoint
-// dfg
+  // private baseUrl = 'http://127.0.0.1:8000/api'; // Replace with your API endpoint
+  private baseUrl = "https://trivex-ca3cec83a111.herokuapp.com/api"
+
   constructor(
     private http: HttpClient,
   ) {}
