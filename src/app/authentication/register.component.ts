@@ -42,7 +42,7 @@ export class RegisterComponent {
   apiService = inject(ApiService);
   authService = inject(AuthService);
   router = inject(Router);
-  helpLink='https://t.me/GOTV123'
+  helpLink=''
   history = window.history
 
   loading = false

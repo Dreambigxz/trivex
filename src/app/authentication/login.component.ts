@@ -41,57 +41,11 @@ export class LoginComponent {
   // apiService = inject(ApiService);
   //
   history = window.history
-  helpLink = "https://t.me/GOTV123"
-  // favoriteFramework = '';
-  // loading=false
-  // showPassword=false
-  // togglePassword() {
-  //   this.showPassword = !this.showPassword;
-  // }
-  //
+  helpLink = ""
+
   loginForm = new FormGroup({
     username: new FormControl(''),
     password: new FormControl(''),
   });
-  // ngOnInit():void{this.authService.isLoggedIn?this.router.navigate(['/main']):0;}
-  // handleSubmit() {
-  //
-  //   let data = this.loginForm.value
-  //   this.loading=true
-  //
-  //   this.apiService.NotokenData('login/',data).subscribe({
-  //     next: (response) => {
-  //       // this.loading=false
-  //       const dialogRef=this.dialog.open(SimpleDialogComponent,{
-  //         data:{message:response.message,header:response.header,color:response.success?'green':'red'}
-  //       })
-  //       dialogRef.afterClosed().subscribe(result => {
-  //         if (response.success) {
-  //           this.authService.login(response.token)
-  //           localStorage['redirectUrl']?[this.router.navigate([localStorage['redirectUrl']]),delete(localStorage['redirectUrl'])]:0;
-  //         }
-  //         this.loading=false
-  //
-  //       })
-  //
-  //     },
-  //     error: (error) => {
-  //       console.log({error});
-  //
-  //       this.loading=false
-  //       this.dialog.open(SimpleDialogComponent,{
-  //         data:{message:"Unable to process request, please try again",header:'Request timeout!', color:'red'}
-  //       })
-  //     }
-  //   });
-  //
-  // }
-  //
-  // ngAfterViewInit() {
-  //   loadExternalScript()
-  // }
-  // navigate(url:any) {
-  //   url = url.split(' ')
-  //   this.router.navigate(url);
-  // }
+
 }
