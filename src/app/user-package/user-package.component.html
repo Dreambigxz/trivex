@@ -35,7 +35,7 @@
           </div>
 
           <div class="card-body" *ngIf="expandedId === inv.id">
-            <p><strong>Total Expected:</strong> {{ calcTotalExpected(inv)  |currencyConverter:true }}</p>
+            <!-- <p><strong>Total Expected:</strong> {{ calcTotalExpected(inv)  |currencyConverter:true }}</p> -->
             <p><strong>Total Earned:</strong> {{ calcTotalEarned(inv) |currencyConverter:true }}</p>
             <p><strong>Left to Earn:</strong> {{ calcLeftToEarn(inv) |currencyConverter:true }}</p>
             <p><strong>Days Left:</strong> {{ calcDaysLeft(inv) }}</p>
