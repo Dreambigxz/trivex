@@ -1,0 +1,40 @@
+<app-spinner></app-spinner>
+<app-header2></app-header2>
+
+
+	<div class="space-top container-fluid">
+
+		<div style="margin-top:2em" class="fieldset">
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()"  class="default-form-wrap pd-top-130">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="single-input-wrap formm_row">
+                      <label>
+                        <i class="ti ti-user"></i>
+                      </label>
+                      <input formControlName="identifier" type="text" class="form-control form__input" placeholder="Enter username / email address">
+                  </div>
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <div class="single-input-wrap  form_row">
+                      <label>
+                        <!-- <img src="assets/img/icon/dollar-sign.png" alt="img"> -->
+                        💳
+                      </label>
+                      <input
+                       formControlName="amount"
+                       type="number"
+                         class="form-control form__input" placeholder="Amount to credit">
+
+                  </div>
+              </div>
+          </div>
+
+          <button style="margin-top:12px" class="cmn-btn px-5 py-3 mb-6 w-100 mt-4 form__submit button button--green button--full">Credit</button>
+      </form>
+
+			</div>
+
+  </div>

@@ -17,6 +17,7 @@ import { NotificationPageComponent } from "./notification-page/notification-page
 import { AboutComponent } from "./about/about.component";
 import { PaymentConfirmationComponent } from "./payment-confirmation/payment-confirmation.component";
 import { InviteRewardComponent } from "./invite-reward/invite-reward.component";
+import {CreditAgentComponent} from './credit-agent/credit-agent.component'
 
 import { authGuard } from './reuseables/auth/auth.guard';
 
@@ -28,6 +29,13 @@ export const routes: Routes = [
   //   title: 'EFGX',
   //
   // },
+  {
+    path: 'credit-agent',
+    component: CreditAgentComponent,
+    title: 'Credit-Agent',
+    canActivate: [authGuard]
+
+    },
 
   {
     path: 'main',

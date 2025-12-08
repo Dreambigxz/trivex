@@ -133,11 +133,7 @@ export class WalletComponent {
       if (this.directory==='deposit') {
         if (!this.quickNav.storeData.get('deposit')) {
           this.quickNav.reqServerData.get('wallet/get_data?dir=start_deposit').subscribe((res)=>{
-
-            console.log({res});
-
           this.walletService.setPaymentMode("", "", true);
-
         })}
       }
 
@@ -163,7 +159,7 @@ export class WalletComponent {
 
 
   paymentCompletedModal=false
- 
+
   copyAddress(item=this.walletAddress,dialog=false) {
     navigator.clipboard.writeText(item).then(() => {
       dialog?[this.dialog.open(SimpleDialogComponent,{

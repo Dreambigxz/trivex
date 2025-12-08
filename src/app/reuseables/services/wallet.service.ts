@@ -158,10 +158,7 @@ export class WalletService {
       initializing?this.setDepositView():0;
     }
 
-    console.log(this.minimumPayment);
     // console.log(this.storeData.store);
-
-
 
   }
 
@@ -197,14 +194,6 @@ export class WalletService {
       this.selectedCurrency="";
       this.minimumPayment=0
     }
-
-    console.log('minimumPayment>>', this.minimumPayment);
-    // if (this.hasPin===null) {
-    //   this
-    // }
-    //
-    // this.h
-
 
   }
 
