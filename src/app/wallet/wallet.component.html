@@ -65,7 +65,7 @@
 
                           <p class="text-info">Please send only  <strong>${{ awaitingDeposit[0].amount|number:'1.2-2' }} </strong> to the address below:</p>
 
-													<button (click)="copyAddress()" style="margin-top: 10px;">Copy Wallet Address <i class="fa fa-copy"></i></button>
+													<button (click)="copyAddress(awaitingDeposit[0].extraField.pay_address)" style="margin-top: 10px;">Copy Wallet Address <i class="fa fa-copy"></i></button>
 													<p *ngIf="copied" style="color: green;">✔ Address copied!</p>
 
 
