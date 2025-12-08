@@ -490,7 +490,7 @@ h2 {
 
 .icon-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 3 per row */
+  grid-template-columns: repeat(3, 1fr); /* 3 per row */
   gap: .4rem;
   padding-top:  20px;
   text-align: center;
