@@ -87,9 +87,9 @@ export class MainComponent implements OnInit {
   }
 
   tiers = [
-    { id:1, daily: '2.2%', lifecycle: 180, min: 10, max: 50, popular: false },
-    { id:2, daily: '2.4%', lifecycle: 180, min: 50, max: 150, popular: true },
-    { id:3,  daily: '2.7%', lifecycle: 180, min: 150, max: 300, popular: false }
+    { id:1, daily: '5%', lifecycle: 180, min: 10, max: 50, popular: false },
+    { id:2, daily: '5.5%', lifecycle: 180, min: 50, max: 150, popular: true },
+    { id:3,  daily: '6%', lifecycle: 180, min: 150, max: 300, popular: false }
   ];
 
 
