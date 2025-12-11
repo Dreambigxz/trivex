@@ -22,15 +22,13 @@ bootstrapApplication(AppComponent, {
 
     // ✅ Needed for NgOptimizedImage
     // provideHttpClient(),
-    provideHttpClient(),
-
-      // withInterceptors([PostHttpInterceptor])), provideServiceWorker('ngsw-worker.js', {
-      //       enabled: !isDevMode(),
-      //       registrationStrategy: 'registerWhenStable:30000'
-      //     }), provideServiceWorker('ngsw-worker.js', {
-      //       enabled: !isDevMode(),
-      //       registrationStrategy: 'registerWhenStable:30000'
-      //     })
+    provideHttpClient(withInterceptors([PostHttpInterceptor])), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
 
 
     // ✅ Register NgOptimizedImage
@@ -39,16 +37,10 @@ bootstrapApplication(AppComponent, {
     // CurrencyConverterPipe,
 
     // 🔥 Service Worker
-    provideServiceWorker('combined-sw.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
-    }), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    // provideServiceWorker('combined-sw.js', {
+    //   enabled: !isDevMode(),
+    //   registrationStrategy: 'registerWhenStable:30000',
+    // }),
     // ✅ Register combined service worker manually
 
 
