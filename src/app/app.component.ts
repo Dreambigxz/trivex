@@ -12,6 +12,8 @@ import PullToRefresh from 'pulltorefreshjs';
 import { filter, pairwise } from 'rxjs/operators';
 import { AuthService } from './reuseables/auth/auth.service';
 
+import { AppDownloadManager } from './reuseables/services/app-download-manager.service';
+
 
 @Component({
   selector: 'app-root',
@@ -23,9 +25,6 @@ import { AuthService } from './reuseables/auth/auth.service';
 
 export class AppComponent {
 
-  // constructor(
-  //   public dialog: MatDialog,
-  // ) {}
 
   title = 'paygotv - Investment App';
   appVersion:any
@@ -34,7 +33,7 @@ export class AppComponent {
 
 
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private appManager: AppDownloadManager) {
 
 
     this.router.events

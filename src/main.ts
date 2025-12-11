@@ -7,6 +7,8 @@ import { routes } from './app/app.routes';
 import { CustomReuseStrategy } from './app/reuseables/custom-reuse-strategy';
 import { PostHttpInterceptor } from './app/reuseables/http-loader/post-http.interceptor';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { isDevMode } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 
 
 bootstrapApplication(AppComponent, {
@@ -18,7 +20,13 @@ bootstrapApplication(AppComponent, {
 
     // ✅ Needed for NgOptimizedImage
     // provideHttpClient(),
-    provideHttpClient(withInterceptors([PostHttpInterceptor]))
+    provideHttpClient(withInterceptors([PostHttpInterceptor])), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          })
 
 
     // ✅ Register NgOptimizedImage

@@ -13,6 +13,8 @@ import { RequestDataService } from '../reuseables/http-loader/request-data.servi
 import { SpinnerComponent } from '../reuseables/http-loader/spinner.component';
 import { MenuBottomComponent } from "../components/menu-bottom/menu-bottom.component";
 
+import { AppDownloadManager } from '../reuseables/services/app-download-manager.service';
+
 import { trigger, style, transition, animate } from '@angular/animations';
 import { tap, delay } from 'rxjs/operators';
 
@@ -51,6 +53,8 @@ export class MainComponent implements OnInit {
   reqServerData = inject(RequestDataService)
 
   router = inject(Router)
+  appManager = inject(AppDownloadManager)
+
 
   channels: Channel[] = [
     { id: 1, invest: 5000,  daily: 1000,  cycleDays: 7,  total: 7000,  title: 'Channel 1' },
@@ -67,6 +71,7 @@ export class MainComponent implements OnInit {
   modalOpen = false;
   GiftBoxOpen = false
   giftCode:any
+
 
   openBlank(url:any){
     window.open(url, '_blank')
