@@ -12,11 +12,17 @@ export class AppDownloadManager {
   }
 
   private initialize() {
+
+    console.log('Initializing...');
+
     if (this.isIOS() && !this.isInStandaloneMode()) {
       this.quickNav.storeData.set('installIOS', true);
       this.quickNav.storeData.set('device', 'IOS');
       console.log('📱 iOS device detected');
     } else {
+
+      console.log('ANDRIOD');
+
       // ✅ Register listener ONCE globally
       window.addEventListener('beforeinstallprompt', (event: Event) => {
         event.preventDefault();

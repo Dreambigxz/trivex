@@ -33,7 +33,7 @@ export class AppComponent {
 
 
 
-  constructor(private router: Router, private appManager: AppDownloadManager) {
+  constructor(private router: Router) {
 
 
     this.router.events
