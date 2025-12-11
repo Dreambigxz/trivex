@@ -58,57 +58,6 @@ export class PaidComponent {
 
   walletService = inject(WalletService)
 
-  onFileChange(event: Event) {
-      const input = event.target as HTMLInputElement;
-
-      if (input.files && input.files.length > 0) {
-        this.selectedFile = input.files[0];
-        // this.paymentCompletedForm.file=this.selectedFile
-      }
-  }
-
-   handleSubmit (){
-
-     const formData = new FormData();
-
-     const { senders_name, transaction_id } = this.paymentCompletedForm.value;
-
-     formData.append('senders_name', senders_name as any);
-     formData.append('transaction_id', transaction_id as any);
-     formData.append('action', 'submit_payment_proof');
-     formData.append('file', this.selectedFile);
-     formData.append('origin', window.origin);
-
-
-     let data = {'action':'submit_payment_proof'}
-
-     this.loading=true
-
-     console.log({data});
-
-
-     // this.apiService.tokenData('upload/', this.authService.tokenKey, 'post', formData)
-     // .subscribe(response => {
-     //   this.close()
-     //   this.loading=false;
-     //   this.serviceData.update(response)
-     //   this.dialog.open(SimpleDialogComponent,{
-     //     data:{message:response.message,header:response.header,color:response.success?'green':'red'}
-     //   })
-     //
-     //   response.success?[this.wallet.awaitingDeposit=response.awaitingDeposit]:0
-     //   // this.AllData = this.serviceData.update(response)
-     // }, error =>{
-     //   this.loading=false
-     //   if (error.statusText === "Unauthorized") {this.authService.logout()}else{
-     //     this.dialog.open(SimpleDialogComponent,{
-     //       data:{message:"Unable to process request, please try again",header:'Request timeout!', color:'red'}
-     //     })
-     //
-     //   }
-     // });
-
-   }
 
 
 }

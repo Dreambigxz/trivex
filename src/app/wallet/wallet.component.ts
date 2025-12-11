@@ -1,7 +1,7 @@
 import { Component, inject, OnInit,ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import {FormGroup, FormControl} from '@angular/forms';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
 
 import { ApiService } from "../api/api.service";
 import { AuthService } from "../auth/auth.service";
@@ -100,6 +100,7 @@ export class WalletComponent {
     amount: new FormControl(''),
     selectedAddress: new FormControl(''),
     pin: new FormControl(''),
+    payment_method:new FormControl('',),
 
   })
 
@@ -113,6 +114,12 @@ export class WalletComponent {
   submittxHash = new FormGroup({
     txHash:new FormControl(''),
     file:new FormControl(null)
+  })
+
+  paymentCompletedForm = new FormGroup({
+    senders_name:new FormControl(''),
+    transaction_id:new FormControl(''),
+    file:new FormControl("", [Validators.required])
   })
 
   extraField:any
@@ -156,7 +163,6 @@ export class WalletComponent {
       }
     });
   }
-
 
   paymentCompletedModal=false
 

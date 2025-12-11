@@ -2582,15 +2582,17 @@ a.plyr__controls__item.plyr__control:hover,
       color: #4c4c4c; }
   .form__select {
     padding: 0;
+    /* padding: 15px 10px 15px 20px; */
     width: 100%;
     margin: 0;
     /* overflow: hidden; */
     border-radius: 25px;
     background-color: #eef3ff;
-    background-image: url(https://vegathemes.net/gomobile/assets/images/icons/blue/arrow-down.svg);
+    /* background-image: url(https://vegathemes.net/gomobile/assets/images/icons/blue/arrow-down.svg); */
     background-repeat: no-repeat;
     background-position: 95% 50%;
     background-size: 16px;
+    border: none;
     /* -webkit-backface-visibility: hidden;
     backface-visibility: hidden;  */
   }

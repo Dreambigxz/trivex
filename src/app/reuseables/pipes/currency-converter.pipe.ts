@@ -7,29 +7,40 @@ import { StoreDataService } from '../http-loader/store-data.service'; // ✅ adj
   // providedIn: 'root' // 👈 THIS makes it injectable in services
 
 })
+
 export class CurrencyConverterPipe implements PipeTransform {
   private storeData = inject(StoreDataService);
 
-  transform(amount: number=0, showSymbol: boolean = false, another_currency=false,minimumFractionDigits:number=2): string {
-
+  transform(
+    amount: number = 0,
+    showSymbol: boolean = false,
+    another_currency: string | false = false,
+    minimumFractionDigits: number = 2
+  ): string {
     const wallet = this.storeData.get('wallet');
-    let init_currency=wallet?.init_currency
-    if (another_currency) {
-      [init_currency] = wallet.init_currencies.filter((c:any)=>c.code===another_currency)
-    }
+    let init_currency = wallet?.init_currency;
 
+    if (another_currency) {
+      const found = wallet?.init_currencies.find((c: any) => c.code === another_currency);
+      if (found) init_currency = found;
+    }
 
     const rate = init_currency?.rate || 1;
     const symbol = init_currency?.symbol || '';
-    let converted;
+    let converted: number;
 
-    if (symbol==='trx') {
+    if (symbol.toLowerCase() === 'trx') {
       converted = amount / rate;
-    }else{
-      converted = amount// * rate;
+    } else {
+      converted = amount * rate;
     }
-    return showSymbol
-      ? `${symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      : converted.toFixed(minimumFractionDigits);
+
+    // Always format with commas and fixed decimal places
+    const formatted = converted.toLocaleString(undefined, {
+      minimumFractionDigits,
+      maximumFractionDigits: minimumFractionDigits
+    });
+
+    return showSymbol ? `${symbol}${formatted}` : formatted;
   }
 }

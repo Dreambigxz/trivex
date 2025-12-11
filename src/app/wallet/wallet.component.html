@@ -13,7 +13,24 @@
             <div class="fieldset">
       			<div class="form">
       				<form (ngSubmit)="walletService.handleSubmit(walletForm,'create_deposit')" [formGroup]="walletForm" novalidate="novalidate">
-      					<div class="form__row">
+
+								<!-- [ngModel] = "walletService.SelectedBank" -->
+
+								<div class="form__row">
+									<label for="">Select currency</label>
+									<div class="form__select">
+										<select
+				              (change)="walletService.onCurrencySelect($event)"
+				              formControlName='payment_method'
+											>
+												<option *ngFor="let c of walletService.initCurrencies.slice(0)" [value]="c.code">
+		                    {{ c.name }} ({{ c.symbol }})
+		                  	</option>
+										</select>
+									</div>
+      					</div>
+
+								<div class="form__row">
       						<input min="{{walletService.minimumPayment}}" formControlName='amount' type="number" name="amount" value="" class="form__input required" placeholder="Amount" required>
                   <small  class="minimum-val">Minimum of <strong translate='no'>{{walletService.selectedCurrency.symbol}}{{walletService.minimumPayment|number:'1.2-2'}}</strong> required</small>
       					</div>
@@ -33,193 +50,239 @@
 
           <ng-template #pendingPaymentBlock>
               <!-- <h4 class="page__title">Awaiting user payment {{initCurrency.symbol}}</h4> -->
-              <div *ngIf="true;else otherCurrencyBlock">
-                <div class="invoice-box" *ngIf="quickNav.storeData.get('deposit') as awaitingDeposit">
-                  <!-- <button *ngIf='awaitingDeposit.transaction[0].generator!=="awaiting_deposit_confirmation"' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
-                  <!-- <button *ngIf='this.serviceData.userData.awaitingDeposit' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
 
-									<div class="invoice-header">
-                    <div>
-                      <strong>Invoice #: </strong>{{ awaitingDeposit[0].sessionID }}<br>
-                      <strong>Date: </strong>{{ awaitingDeposit[0].timestamp | date:'short' }}<br>
-                      <strong>Amount: </strong>${{ awaitingDeposit[0].amount|number:'1.2-2' }}<br>
-                      <!-- <strong *ngIf='awaitingDeposit.transaction[0].generator=="awaiting_deposit_confirmation"' >Approximate C: </strong> -->
+							<div *ngIf="quickNav.storeData.get('deposit') as awaitingDeposit">
+								<div *ngIf="awaitingDeposit[0].method==='USD';else otherCurrencyBlock">
+									<div class="invoice-box">
+										<!-- <button *ngIf='awaitingDeposit.transaction[0].generator!=="awaiting_deposit_confirmation"' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
+										<!-- <button *ngIf='this.serviceData.userData.awaitingDeposit' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
 
-                    </div>
-                  </div>
+										<div class="invoice-header">
+											<div>
+												<strong>Invoice #: </strong>{{ awaitingDeposit[0].sessionID }}<br>
+												<strong>Date: </strong>{{ awaitingDeposit[0].timestamp | date:'short' }}<br>
+												<strong>Amount: </strong>${{ awaitingDeposit[0].init_amount|number:'1.2-2' }}<br>
+												<!-- <strong *ngIf='awaitingDeposit.transaction[0].generator=="awaiting_deposit_confirmation"' >Approximate C: </strong> -->
 
-                  <hr />
-
-									<div *ngIf='awaitingDeposit[0].generator=="awaiting_deposit_confirmation"'>
-										<h3>Payment completed ✅</h3>
-										<p class="text-info">
-											Your payment is currently awaiting for network confirmation! Approximate waiting network time.
-											<small class="text-small time">{{awaitingDeposit[0].timestamp|countdown:1|async}}</small>
-										</p>
-									</div>
-
-                  <div *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' class="invoice-customer">
-                    <div class="address">
-                      <div style="max-width: 400px; margin: auto; text-align: center;">
-                          <h2>Send USDT Payment</h2>
-
-                          <p class="text-info">Please send only  <strong>${{ awaitingDeposit[0].amount|number:'1.2-2' }} </strong> to the address below:</p>
-
-													<button (click)="copyAddress(awaitingDeposit[0].extraField.pay_address)" style="margin-top: 10px;">Copy Wallet Address <i class="fa fa-copy"></i></button>
-													<p *ngIf="copied" style="color: green;">✔ Address copied!</p>
-
-
-                          <div *ngIf='awaitingDeposit.length' style=";">
-														<qrcode
-															[qrdata]="awaitingDeposit[0].extraField.pay_address"
-															[width]="150"
-															>
-														</qrcode>
-													</div>
-
-                          <p style="word-break: break-word;"><strong>{{ walletAddress }}</strong></p>
-
-													<div class="payment-status">
-														<!-- <p *ngIf="extraField"> BALANCE: ${{extraField.balance}}</p> -->
-														<!-- <span class="text-warning"> {{ extraField.balance == 0 ?'Awaiting payment': 'Awaiting 2 network confirmation to get your payment reflect, Please keep refreshing this page.' }} </span> -->
-													</div>
-
-													<button *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' (click)='openProofModal()' style="float:" class="form__submit button button--green button--small">Payment Completed</button>
-
-
-													<!-- <button (click)='isLoadingContent=true;history.go(0)' class="refresh" type="button" name="button">REFRESH PAGE <i class="fa fa-refresh"></i></button> -->
-
-                        </div>
-
-
-                    </div>
-
-                  </div>
-
-                  <div (click)="walletService.cancelPayment()" class="cancelPayment">
-                    <button  style="float:" class="form__submit button button--danger button--small">Cancel</button>
-                  </div>
-
-									<!-- upload hash ID -->
-									<!-- Overlay -->
-									<div class="overlay" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'" (click)="closeProofModal()"></div>
-
-									<!-- Modal -->
-									<div class="proof-modal" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'">
-									  <div class="modal-header">
-									    <h2>Submit Payment Proof</h2>
-									    <button class="close" (click)="closeProofModal()">×</button>
-									  </div>
-
-
-										<div class="fieldset">
-												<div class="form">
-													<form (ngSubmit)="walletService.sendtxHash()" [formGroup]="submittxHash"  novalidate="novalidate">
-														<div class="form__row">
-															<input [(ngModel)]="walletService.txHash" type="text" formControlName="txHash" class="form__input required" placeholder="trex Hash D"  required>
-									            <!-- <small class="minimum-val">Optional</small> -->
-									            <!-- <small class="minimum-val">Name on your account</small> -->
-
-														</div>
-														<!-- <div class="form__row">
-															<input [(ngModel)]="walletService.LocalDepositSenderAccNum" type="text" formControlName="transaction_id" name="transaction_id" value="" class="form__input required" placeholder="Transfer Number" required>
-									            <small class="minimum-val">Account number money was sent from</small>
-
-														</div> -->
-									          <div class="form__row">
-															<input accept=".jpg,.jpeg,image/jpeg,.png" type="file" (change)="walletService.onImageSelected($event)" formControlName="file" name="file" value="" class="form__input required" placeholder="Transaction ID" required>
-														</div>
-
-									          <!-- <input type="hidde" name="action" value="submit_payment_proof"> -->
-
-														<div class="form__row mt-20">
-															<input  type="submit" name="submit" class="form__submit button button--green button--full" id="submit" value="SUBMIT" [class.disabled]='!submittxHash.valid' >
-															<!-- <label *ngIf='loading' id="loader" style="display:;"><div id="loader-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></label> -->
-														</div>
-													</form>
-												</div>
 											</div>
-									</div>
-                </div>
+										</div>
 
-                </div>
+										<hr />
 
-                <ng-template #otherCurrencyBlock>
+										<div *ngIf='awaitingDeposit[0].generator=="awaiting_deposit_confirmation"'>
+											<h3>Payment completed ✅</h3>
+											<p class="text-info">
+												Your payment is currently awaiting for network confirmation! Approximate waiting network time.
+												<small class="text-small time">{{awaitingDeposit[0].timestamp|countdown:1|async}}</small>
+											</p>
+										</div>
 
-									<div *ngIf="quickNav.storeData.get('deposit') as awaitingDeposit">
+										<div *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' class="invoice-customer">
+											<div class="address">
+												<div style="max-width: 400px; margin: auto; text-align: center;">
+														<h2>Send USDT Payment</h2>
 
-										<div *ngIf="awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'">
+														<p class="text-info">Please send only  <strong>${{ awaitingDeposit[0].amount|number:'1.2-2' }} </strong> to the address below:</p>
 
-											<div class="info-alert">
-												  <i class="fa fa-info-circle"></i>
-												  <span>
-												    NOTE: Kindly click the <strong>Paid</strong> button after the invoice payment is completed.
-												  </span>
-												</div>
+														<button (click)="copyAddress(awaitingDeposit[0].extraField.pay_address)" style="margin-top: 10px;">Copy Wallet Address <i class="fa fa-copy"></i></button>
+														<p *ngIf="copied" style="color: green;">✔ Address copied!</p>
+
+
+														<div *ngIf='awaitingDeposit.length' style=";">
+															<qrcode
+																[qrdata]="awaitingDeposit[0].extraField.pay_address"
+																[width]="150"
+																>
+															</qrcode>
+														</div>
+
+														<p style="word-break: break-word;"><strong>{{ walletAddress }}</strong></p>
+
+														<div class="payment-status">
+															<!-- <p *ngIf="extraField"> BALANCE: ${{extraField.balance}}</p> -->
+															<!-- <span class="text-warning"> {{ extraField.balance == 0 ?'Awaiting payment': 'Awaiting 2 network confirmation to get your payment reflect, Please keep refreshing this page.' }} </span> -->
+														</div>
+
+														<button *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' (click)='openProofModal()' style="float:" class="form__submit button button--green button--small">Payment Completed</button>
+
+
+														<!-- <button (click)='isLoadingContent=true;history.go(0)' class="refresh" type="button" name="button">REFRESH PAGE <i class="fa fa-refresh"></i></button> -->
+
+													</div>
+
+
+											</div>
 
 										</div>
 
-											<div *ngIf='awaitingDeposit[0].generator=="awaiting_deposit_confirmation"'>
-												<h3>Payment completed ✅</h3>
-												<p class="text-info">
-													Your invoice is currently awaiting bank confirmation! Approximate waiting network time.
-													<small class="text-small time">{{awaitingDeposit[0].timestamp|countdown:2|async}}</small>
-												</p>
+										<div (click)="walletService.cancelPayment()" class="cancelPayment">
+											<button  style="float:" class="form__submit button button--danger button--small">Cancel</button>
+										</div>
+
+										<!-- upload hash ID -->
+										<!-- Overlay -->
+										<div class="overlay" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'" (click)="closeProofModal()"></div>
+
+										<!-- Modal -->
+										<div class="proof-modal" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'">
+											<div class="modal-header">
+												<h2>Submit Payment Proof</h2>
+												<button class="close" (click)="closeProofModal()">×</button>
 											</div>
 
-											<!-- <button (click)="showModal = true">Open Modal</button> -->
 
-											<app-paid *ngIf="paymentCompletedModal&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'" (closeModal)="paymentCompletedModal = false"></app-paid>
-												<div class="invoice-box">
-													<!-- <button *ngIf='this.serviceData.userData.awaitingDeposit' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
-													<div class="invoice-header">
-														<div>
-															<strong>Invoice #: </strong>{{ awaitingDeposit[0].sessionID }}<br>
-															<strong>Date: </strong>{{ awaitingDeposit[0].timestamp | date:'short' }}<br>
-															<strong>Amount: </strong>{{ awaitingDeposit[0].amount|number:'1.2-2' }}<br>
-															<!-- <strong *ngIf='awaitingDeposit.transaction[0].generator=="awaiting_deposit_confirmation"' >Approximate C: </strong> -->
+											<div class="fieldset">
+													<div class="form">
+														<form (ngSubmit)="walletService.sendtxHash()" [formGroup]="submittxHash"  novalidate="novalidate">
+															<div class="form__row">
+																<input [(ngModel)]="walletService.txHash" type="text" formControlName="txHash" class="form__input required" placeholder="trex Hash D"  required>
+																<!-- <small class="minimum-val">Optional</small> -->
+																<!-- <small class="minimum-val">Name on your account</small> -->
 
-														</div>
-
-														<!-- <div style="text-align: right;">
-															<strong>Company Name</strong><br>
-															c
-														</div> -->
-													</div>
-
-													<hr />
-
-													<div *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' class="invoice-customer">
-														<strong>Verified Payment Account:</strong><br>
-														<p class="text-info">Make payment to any of the account below:</p>
-														<div class="address" *ngFor="let account of quickNav.storeData.get('local_banks')">
-															<div class="x-flex">
-																<strong> <i class="fa fa-credit-card"></i> {{account.account_number}}</strong>
-																<i (click)="copyAddress(account.account_number,true)" class="fa fa-copy"></i>
 															</div>
-															<div class="x-flex">
+															<!-- <div class="form__row">
+																<input [(ngModel)]="walletService.LocalDepositSenderAccNum" type="text" formControlName="transaction_id" name="transaction_id" value="" class="form__input required" placeholder="Transfer Number" required>
+																<small class="minimum-val">Account number money was sent from</small>
+
+															</div> -->
+															<div class="form__row">
+																<input accept=".jpg,.jpeg,image/jpeg,.png" type="file" (change)="walletService.onImageSelected($event)" formControlName="file" name="file" value="" class="form__input required" placeholder="Transaction ID" required>
 															</div>
-															<span><i class="fa fa-user"></i> {{account.account_holder}}</span> <br>
-															<span><i class="fa fa-bank"></i> {{account.bank}}</span>
-															<hr>
 
-														</div>
+															<!-- <input type="hidde" name="action" value="submit_payment_proof"> -->
 
-														<button *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' (click)='paymentCompletedModal=true' style="float:" class="form__submit button button--green button--small">PAID</button>
-
-													</div>
-
-													<div (click)="walletService.cancelPayment()" class="cancelPayment">
-														<button  style="float:" class="form__submit button button--danger button--small">Cancel Invoice</button>
+															<div class="form__row mt-20">
+																<input  type="submit" name="submit" class="form__submit button button--green button--full" id="submit" value="SUBMIT" [class.disabled]='!submittxHash.valid' >
+																<!-- <label *ngIf='loading' id="loader" style="display:;"><div id="loader-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></label> -->
+															</div>
+														</form>
 													</div>
 												</div>
+										</div>
+									</div>
 
 									</div>
 
-                </ng-template>
+									<ng-template #otherCurrencyBlock>
+
+										<div *ngIf="quickNav.storeData.get('deposit') as awaitingDeposit">
+
+											<div *ngIf="awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'">
+
+												<div class="info-alert">
+														<i class="fa fa-info-circle"></i>
+														<span>
+															NOTE: Kindly click the <strong>Paid</strong> button after the invoice payment is completed.
+														</span>
+													</div>
+
+											</div>
+
+												<div *ngIf='awaitingDeposit[0].generator=="awaiting_deposit_confirmation"'>
+													<h3>Payment completed ✅</h3>
+													<p class="text-info">
+														Your invoice is currently awaiting bank confirmation! Approximate waiting network time.
+														<small class="text-small time">{{awaitingDeposit[0].timestamp|countdown:2|async}}</small>
+													</p>
+												</div>
+
+												<!-- <button (click)="showModal = true">Open Modal</button> -->
+
+												<app-paid *ngIf="paymentCompletedModal&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'" (closeModal)="paymentCompletedModal = false"></app-paid>
+													<div class="invoice-box">
+														<!-- <button *ngIf='this.serviceData.userData.awaitingDeposit' (click)='paymentCompletedModal=true' style="float:right" class="form__submit button button--green button--small">PAID</button> -->
+														<div class="invoice-header">
+															<div>
+																<strong>Invoice #: </strong>{{ awaitingDeposit[0].sessionID }}<br>
+																<strong>Date: </strong>{{ awaitingDeposit[0].timestamp | date:'short' }}<br>
+																<strong>Amount: </strong>{{awaitingDeposit[0].method}}{{ awaitingDeposit[0].init_amount|number:'1.2-2' }}<br>
+																<!-- <strong *ngIf='awaitingDeposit.transaction[0].generator=="awaiting_deposit_confirmation"' >Approximate C: </strong> -->
+
+															</div>
+
+															<!-- <div style="text-align: right;">
+																<strong>Company Name</strong><br>
+																c
+															</div> -->
+														</div>
+
+														<hr />
+
+														<div *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' class="invoice-customer">
+															<strong>Verified Payment Account:</strong><br>
+															<p class="text-info">Make payment to any of the account below:</p>
+															<div class="address" *ngFor="let account of quickNav.storeData.get('local_banks')">
+																<div class="x-flex">
+																	<strong> <i class="fa fa-credit-card"></i> {{account.account_number}}</strong>
+																	<i (click)="copyAddress(account.account_number,true)" class="fa fa-copy"></i>
+																</div>
+																<div class="x-flex">
+																</div>
+																<span><i class="fa fa-user"></i> {{account.account_holder}}</span> <br>
+																<span><i class="fa fa-bank"></i> {{account.bank}}</span>
+																<hr>
+
+															</div>
+
+															<button *ngIf='awaitingDeposit[0].generator!=="awaiting_deposit_confirmation"' (click)='openProofModal()' style="float:" class="form__submit button button--green button--small">PAID</button>
+
+														</div>
+
+														<div (click)="walletService.cancelPayment()" class="cancelPayment">
+															<button  style="float:" class="form__submit button button--danger button--small">Cancel Invoice</button>
+														</div>
+													</div>
+
+										</div>
+
+										<!-- Submit local paymemnt proof -->
+										<!-- Overlay -->
+										<div class="overlay" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'" (click)="closeProofModal()"></div>
+
+										<!-- Modal -->
+										<div class="proof-modal" *ngIf="proofModalVisible&&awaitingDeposit[0].generator!=='awaiting_deposit_confirmation'">
+											<div class="modal-header">
+												<h2>Submit Payment Proof</h2>
+												<button class="close" (click)="closeProofModal()">×</button>
+											</div>
+
+
+											<div class="fieldset">
+													<div class="form">
+														<form id="paymentCompletedForm" (ngSubmit)="walletService.paymentCompleted()"  [formGroup]="paymentCompletedForm" novalidate="novalidate">
+															<div class="form__row">
+																<input [(ngModel)]="walletService.localDepositSendersName" type="text" formControlName="senders_name" name="senders_name" value="" class="form__input required" placeholder="Senders Name/ ID"  required>
+										            <!-- <small class="minimum-val">Optional</small> -->
+										            <small class="minimum-val">Name on your account</small>
+
+															</div>
+															<div class="form__row">
+																<input [(ngModel)]="walletService.LocalDepositSenderAccNum" type="text" formControlName="transaction_id" name="transaction_id" value="" class="form__input required" placeholder="Transfer Number" required>
+										            <small class="minimum-val">Account number money was sent from</small>
+
+															</div>
+															<div class="form__row">
+																<input accept=".jpg,.jpeg,image/jpeg,.png" type="file" (change)="walletService.onImageSelected($event)" formControlName="file" name="file" value="" class="form__input required" placeholder="Transaction ID" required>
+															</div>
+
+										          <!-- <input type="hidde" name="action" value="submit_payment_proof"> -->
+
+															<div class="form__row mt-20">
+																<input *ngIf="!loading" type="submit" name="submit" class="form__submit button button--green button--full" id="submit" value="SUBMIT" [disabled]='!paymentCompletedForm.valid'>
+																<label *ngIf='loading' id="loader" style="display:;"><div id="loader-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></label>
+															</div>
+														</form>
+													</div>
+												</div>
+										</div>
+
+									</ng-template>
+							</div>
+
 
             </ng-template>
         </div>
+				<!-- withdrawal component -->
         <div *ngIf="directory==='withdraw'">
 					<div *ngIf='!quickNav.storeData.store["hasPin"]; else hasPinBlock' class="noPin">
 						<div>
@@ -251,6 +314,7 @@
 							</div>
 						</div>
 					</div>
+					<!-- has pin component -->
 					<ng-template #hasPinBlock>
 						<div *ngIf='walletService.addNewAddress||!quickNav.storeData.store["addresses"]; else canWithdrawBlock' class="">
 							<h4 class="page__title">Update payment address </h4>
@@ -258,8 +322,13 @@
 
 								<div class="form">
 									<form (ngSubmit)="walletService.handleSubmit(addAddressForm,'add_new_address')" [formGroup]="addAddressForm" novalidate="novalidate">
+										<div *ngIf='walletService.selectedCurrency?.code==="USD";else localPaymentBlock'>
 
-										<div *ngIf='walletService.selectedCurrency?.code==="NGN";else usdtBlock'>
+											<div class="form__row">
+												<input  formControlName='account_number' type="text" name="account_number"  class="form__input required" placeholder="USDT Address" required>
+											</div>
+										</div>
+										<ng-template #localPaymentBlock>
 											<div class="form__row">
 												<input  formControlName='account_number' type="number" name="account_number"  class="form__input required" placeholder="Account Number" required>
 											</div>
@@ -268,11 +337,6 @@
 											</div>
 											<div class="form__row">
 												<input formControlName='bank'  type="text" name="bank"  class="form__input required" placeholder="Bank" required>
-											</div>
-										</div>
-										<ng-template #usdtBlock>
-											<div class="form__row">
-												<input  formControlName='account_number' type="text" name="account_number"  class="form__input required" placeholder="USDT Address" required>
 											</div>
 											</ng-template>
 
@@ -302,7 +366,7 @@
 		                    <div>
 		                      <strong>Invoice #: </strong>{{ tra[0].sessionID }}<br>
 		                      <strong>Date: </strong>{{ tra[0].timestamp | date:'short' }}<br>
-		                      <strong>Amount: </strong>{{ tra[0].amount|number:'1.2-2' }}<br>
+		                      <strong>Amount: </strong>{{tra[0].method}} {{ tra[0].init_amount|number:'1.2-2' }}<br>
 		                      <strong> Expected payment time: {{tra[0].timestamp|countdown:48|async}}</strong>
 		                    </div>
 		                  </div>
@@ -313,13 +377,15 @@
 		                </div>
 									</div>
 
+									<!-- withdrawal form -->
+
 									<ng-template #withdrawFormBlock>
-										<h4 class="page__title">How  much do you want to withdraw ?</h4>
+										<h4 class="page__title">How much do you want to withdraw ?</h4>
 
 										<button class="add-new-add" (click)="walletService.addNewAddress=true" type="button" name="button">+ New Address</button>
 										<span class="available-bal" translate='no' >
 											BAL: {{walletService.selectedCurrency.symbol}}
-											<span style="font-weight:500">{{quickNav.storeData.store['wallet'].balance.new|number:'2.2-2'}}</span>
+											<span style="font-weight:500">{{quickNav.storeData.store['wallet'].balance.new|currencyConverter}}</span>
 										</span>
 
 										<form (ngSubmit)="walletService.handleSubmit(walletForm,'create_withdraw')" [formGroup]="walletForm" novalidate="novalidate">
@@ -331,7 +397,7 @@
 											<div  class="form__row">
 													<label  for="">Select Address</label>
 													<div class="form__select">
-														<select formControlName='selectedAddress' name="selectedAddress" class="required selectedAddress" required>
+														<select formControlName='selectedAddress' name="selectedAddress"  required>
 															<option disabled selected='selected'>Select</option>
 															<option *ngFor="let add of addresses;let i=index" value="{{i}}">{{add.account_number}}  - {{ add.account_holder}}</option>
 														</select>

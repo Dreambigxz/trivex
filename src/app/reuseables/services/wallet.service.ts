@@ -160,6 +160,7 @@ export class WalletService {
 
     // console.log(this.storeData.store);
 
+
   }
 
   /** Get current value */
@@ -188,12 +189,18 @@ export class WalletService {
       if (code==='TRON') {
         this.minimumPayment=this.convertUsdToTrx(this.storeData.get('wallet').settings['minimum_'+this.page] ,getSelectedData.rate)
       }else{
-        this.minimumPayment=this.storeData.get('wallet').settings['minimum_'+this.page] //* getSelectedData.rate
+        this.minimumPayment=this.storeData.get('wallet').settings['minimum_'+this.page] * getSelectedData.rate
       }
     }else{
       this.selectedCurrency="";
       this.minimumPayment=0
     }
+
+    this.SelectedBank = getSelectedData.name
+
+    console.log({SelectedBank:this.SelectedBank});
+
+
 
   }
 
@@ -269,9 +276,9 @@ export class WalletService {
     formData.append('origin', window.location.origin)
     formData.append('senders_name', this.localDepositSendersName)
     formData.append('senders_account_number', this.LocalDepositSenderAccNum)
-    formData.append('processor', "payment_completed")
-    // this.setSelectedFile(formData)
-      this.reqServerData.post("wallet/send_request/?showSpinner/",formData).subscribe(
+    formData.append('processor', "payment_receipt")
+    this.setSelectedFile(formData)
+      this.reqServerData.post("upload/?showSpinner/",formData).subscribe(
         // {
         //   next: res => {
         //     console.log({res});
