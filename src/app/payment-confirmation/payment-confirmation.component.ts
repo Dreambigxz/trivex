@@ -11,10 +11,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { timeSince, copyContent, quickMessage } from '../../helper';
 import { SimpleDialogComponent } from "../simple-dialog/simple-dialog.component";
 import { QuickNavService } from '../reuseables/services/quick-nav.service';
+import { TruncateCenterPipe } from '../reuseables/pipes/truncate-center.pipe';
 
 @Component({
   selector: 'app-payment-confirmation',
-  imports: [CommonModule],
+  imports: [CommonModule, TruncateCenterPipe],
   templateUrl: './payment-confirmation.component.html',
   styleUrl: './payment-confirmation.component.css'
 })
@@ -130,8 +131,8 @@ export class PaymentConfirmationComponent {
 
   extraField(tra:any,type:any){
 
-    const fixed = tra.extraField.replace(/'/g, '"');
-    const data = JSON.parse(fixed);
+    // const fixed = tra.extraField.replace(/'/g, '"');
+    const data = tra.extraField//JSON.parse(fixed);
     // let  data = JSON.parse(tra.extraField)
     // if (type==='bank'){
     //   return data[type].text
